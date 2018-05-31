@@ -1,0 +1,27 @@
+.switch-auth {
+  cursor: pointer;
+  font-weight: bold;
+  transition: all .3s;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.switch-auth::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  height: 1px;
+  background: #374353;
+  transition: all .3s;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.switch-auth:hover::after {
+  text-decoration: none;
+  transform: scale(1);
+  opacity: 1;
+}

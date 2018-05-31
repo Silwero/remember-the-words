@@ -1,0 +1,83 @@
+/* Header */
+.header {
+  background: #facc43;
+  color: #374353;
+}
+
+.header nav::after {
+  content: '';
+  clear: both;
+  display: block;
+}
+
+.header-logo {
+  display: block;
+  float: left;
+}
+
+.header-logo img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.header-logo a {
+  display: flex;
+  line-height: 40px;
+  font-size: 40px;
+  font-weight: bold;
+  color: inherit;
+  text-decoration: none;
+  align-items: flex-end;
+}
+
+/* Content */
+.content {
+    padding: 40px 0;
+}
+
+/* Buttons */
+.btn {
+  outline: none;
+}
+
+.btn-primary {
+  background: #374353;
+  border: #374353;
+}
+
+.btn-primary:hover {
+  background: #263242;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.show>.btn-primary.dropdown-toggle {
+  background: #152131;
+}
+
+.btn-primary.disabled,
+.btn-primary:disabled {
+  background-color: #4a5360;
+  cursor: not-allowed;
+}
+
+.delete {
+  cursor: pointer;
+  padding: 10px;
+  transition: all .3s;
+}
+
+/* Forms */
+.centered-form {
+  margin: 0 auto;
+  text-align: center;
+  padding: 30px;
+  background: #facc43;
+  border-radius: 5px;
+  max-width: 700px;
+}
+
+.centered-form-sm {
+  max-width: 400px;
+}
