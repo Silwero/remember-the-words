@@ -25,9 +25,13 @@ export class HeaderNav extends Component {
 				authOnly: true,
 				unAuthOnly: false,
 				subnav: {
-					logout: {
+					chooseCorrect: {
 						url: '/choose-correct',
 						placeholder: 'Сhoose correct'
+					},
+					inputTranslation: {
+						url: '/input-translation',
+						placeholder: 'Input translation'
 					}
 				}
 			},
@@ -92,7 +96,7 @@ export class HeaderNav extends Component {
 
 		return (
 			<nav>
-				<ul className="header-nav">
+				<ul className="header-nav" onClick={this.props.click}>
 					{newLinks}
 				</ul>
 			</nav>

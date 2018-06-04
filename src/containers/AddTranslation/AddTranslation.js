@@ -5,10 +5,10 @@ import * as actions from '../../store/actions/actions';
 
 export class AddTranslation extends Component {
   state = {
-    source: 'test',
-    translation: 'проверка',
+    source: '',
+    translation: '',
     variants: '',
-    isEmpty: false
+    isEmpty: true
   }
 
   inputHandler = (e) => {

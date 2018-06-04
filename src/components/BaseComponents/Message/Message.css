@@ -1,0 +1,23 @@
+.message {
+  background: #28a745;
+  padding: 6px 0;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  transform: scaleY(0);
+  transition: transform .3s;
+  transform-origin: 0 0;
+}
+
+.error {
+  background: #dc3545;
+  transform: scaleY(1);
+}
+
+.success {
+  background: #28a745;
+  transform: scaleY(1);
+}

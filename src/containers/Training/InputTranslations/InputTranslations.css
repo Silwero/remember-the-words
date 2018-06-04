@@ -1,0 +1,69 @@
+.answer-result {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 2rem;
+  text-transform: uppercase;
+}
+
+.answer-result div {
+  display: flex;
+  justify-content: center;
+  opacity: .7;
+  align-items: center;
+  border: 2px solid currentColor;
+  margin: 0 5px 15px;
+  width: 50px;
+  height: 50px;
+}
+
+.answer-result .space {
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+  opacity: .3;
+}
+
+.answer-result .correct,
+.answer-result .mistake {
+  opacity: 1;
+}
+
+.training-input-translation label {
+  text-align: center;
+  font-weight: bold;
+}
+
+.testing .answer-result .correct {
+  color: #28a745;
+}
+
+.testing .answer-result .mistake {
+  color: #dc3545;
+}
+
+.training-input-translation {
+  position: relative;
+}
+
+@media (max-width: 767px) {
+
+  .answer-result {
+    font-size: 1rem;
+  }
+
+  .answer-result div {
+    width: 25px;
+    height: 25px;
+    margin: 0 3px 6px;
+  }
+
+  .training-source {
+    font-size: 1.7rem;
+    line-height: 30px;
+  }
+
+  .additional-variants:not(:empty) {
+    margin-top: 10px;
+  }
+}

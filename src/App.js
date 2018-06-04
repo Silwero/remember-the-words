@@ -7,6 +7,7 @@ import HeaderNav from './components/BaseComponents/HeaderNav/HeaderNav';
 import { Link, Switch, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from './store/actions/actions';
+import { AnimatedSwitch } from 'react-router-transition';
 
 import Auth from './containers/Auth/Auth';
 import Logout from './containers/Auth/Logout';
@@ -14,10 +15,25 @@ import AddTranslation from './containers/AddTranslation/AddTranslation';
 import MyTranslations from './containers/MyTranslations/MyTranslations';
 import Home from './containers/Home/Home';
 import ChooseCorrect from './containers/Training/ChooseCorrect/ChooseCorrect';
+import InputTranslations from './containers/Training/InputTranslations/InputTranslations';
+import HamburgerBtn from './components/BaseComponents/HeaderNav/HamburgerBtn/HamburgerBtn';
+import Overlay from './components/BaseComponents/Overlay/Overlay';
+import Message from './components/BaseComponents/Message/Message';
 
 class App extends Component {
+
   componentWillMount() {
     this.props.checkAuth();
+  }
+
+  mobileMenuToggle = (target) => {
+    target.classList.toggle('is-active');
+    document.querySelector('body').classList.toggle('mobile-menu-opened');
+  }
+
+  closeMenuOnOverlayClick = (target) => {
+    document.querySelector('body').classList.remove('mobile-menu-opened');
+    document.querySelector('.hamburger').classList.remove('is-active');
   }
 
   render() {
@@ -32,27 +48,42 @@ class App extends Component {
                   RTW
                 </Link>
               </div>
-              <HeaderNav />
+              <HeaderNav click={this.closeMenuOnOverlayClick} />
+              <HamburgerBtn click={this.mobileMenuToggle} />
             </div>
           </div>
         </header>
         <main className="content">
+           {Object.keys(this.props.message).length ? <Message type={this.props.message.type} message={this.props.message.text} /> : null }
           <div className="container">
-            <Switch>
-              <Route exact path='/' component={Home}/>
-              <Route path='/auth' component={Auth}/>
-              <Route path='/add-translation' component={AddTranslation}/>
-              <Route path='/logout' component={Logout}/>
-              <Route path='/my-translations' component={MyTranslations}/>
-              <Route path='/choose-correct' component={ChooseCorrect}/>
-            </Switch>
+            <AnimatedSwitch
+              atEnter={{ opacity: 0 }}
+              atLeave={{ opacity: 0 }}
+              atActive={{ opacity: 1 }}
+              className="switch-wrapper"
+            >
+                <Route exact path='/' component={Home}/>
+                <Route path='/auth' component={Auth}/>
+                <Route path='/add-translation' component={AddTranslation}/>
+                <Route path='/logout' component={Logout}/>
+                <Route path='/my-translations' component={MyTranslations}/>
+                <Route path='/choose-correct' component={ChooseCorrect}/>
+                <Route path='/input-translation' component={InputTranslations}/>
+            </AnimatedSwitch>
           </div>
         </main>
         <footer className="footer">
 
         </footer>
+        <Overlay click={this.closeMenuOnOverlayClick} />
       </div>
     );
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    message: state.message
   }
 }
 
@@ -62,4 +93,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(App));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

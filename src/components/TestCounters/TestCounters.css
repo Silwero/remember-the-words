@@ -1,0 +1,31 @@
+.test-counters {
+  margin-top: 40px;
+  font-size: 1.3rem;
+}
+
+.test-counters .counter-answers {
+  text-align: center;
+}
+
+.test-counters .right-answers {
+  text-align: right;
+}
+
+.right-answers strong {
+  color: #28a745;
+}
+
+.wrong-answers strong {
+  color: #dc3545;
+}
+
+@media (max-width: 767px) {
+  .test-counters .wrong-answers,
+  .test-counters .right-answers {
+    text-align: center;
+  }
+
+  .test-counters {
+    font-size: 1rem;
+  }
+}

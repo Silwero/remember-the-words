@@ -25,7 +25,7 @@ textarea.form-control:focus {
 
 .form-control::placeholder {
   color: #374353;
-  opacity: 1;
+  opacity: .7;
 }
 
 .form-control:focus::placeholder {

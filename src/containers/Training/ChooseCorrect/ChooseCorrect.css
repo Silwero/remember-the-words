@@ -1,0 +1,50 @@
+.choose-correct-answer .custom-control-label {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 3px 15px;
+  border: 1px solid #374353;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 3px 3px 7px 2px rgba(55,67,83,.3);
+  transition: all .3s;
+}
+
+.choose-correct-answer .custom-control-label:hover {
+  box-shadow: 1px 1px 1px 1px rgba(55,67,83,.3);
+  background: #fabc09;
+}
+
+.choose-correct-answer :checked + .custom-control-label {
+  box-shadow: inset 3px 3px 7px 2px rgba(55,67,83,.3);
+  background: #fabc09;
+}
+
+.choose-correct-answer .mistake + .custom-control-label {
+  background: #dc3545;
+  color: #fff;
+}
+
+.choose-correct-answer .correct + .custom-control-label {
+  background: #28a745;
+  color: #fff;
+}
+
+.choose-correct-answer .btn {
+  min-width: 50%;
+}
+
+.choose-correct-answer .custom-control {
+  padding-left: 0;
+}
+
+.choose-correct-answer .custom-control-label::after,
+.choose-correct-answer .custom-control-label::before {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .choose-correct-answer .custom-control-label {
+    font-size: 1rem;
+  }
+}

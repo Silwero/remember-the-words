@@ -5,22 +5,33 @@ const initialState = {
   userInfo: {
     displayName: ''
   },
-  translations: {}
+  translations: {},
+  message: {}
 }
 
 export const reducer = (state = initialState, action) => {
   const newState = {...state};
 	switch(action.type) {
+    case ActionTypes.SET_MESSAGE:
+      let message = {
+        type: action.is,
+        text: action.text
+      }
+      newState.message = message;
+      return newState;
+    case ActionTypes.REMOVE_MESSAGE:
+      newState.message = {};
+      return newState;
     case ActionTypes.DELETE_TRANSLATION:
       let translations = {...newState.translations}
       delete translations[action.name];
       newState.translations = {...translations};
       return newState;
     case ActionTypes.SAVE_TRANSLATION_TO_LOCAL:
-      newState.translations[action.name] = action.data;
+      newState.translations[action.name] = {...action.data};
       return newState
     case ActionTypes.SAVE_TRANSLATIONS:
-      newState.translations = action.data;
+      newState.translations = {...action.data};
       return newState;
     case ActionTypes.LOGOUT:
       newState.userInfo = {

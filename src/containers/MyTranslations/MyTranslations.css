@@ -5,6 +5,21 @@
   font-weight: bold;
 }
 
+.translation-sort {
+  padding: 30px;
+  background: #facc43;
+  margin-bottom: 30px;
+  border-radius: 5px;
+}
+
+.translation-sort .form-group {
+  margin-bottom: 0;
+}
+
+.translation-sort label {
+  font-weight: bold;
+}
+
 .translations-list-tanslation {
   display: flex;
   flex-wrap: wrap;
@@ -31,6 +46,7 @@
 .translation-source,
 .translation-result {
   flex: 0 1 50%;
+  max-width: 50%;
   padding: 10px 20px;
   border-top: 1px solid #374353;
 }

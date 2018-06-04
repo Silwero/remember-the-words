@@ -7,6 +7,29 @@ const logoutSuccess = () => {
   }
 }
 
+const setMessageToState = (type, message) => {
+  return {
+    type: actionTypes.SET_MESSAGE,
+    is: type,
+    text: message.replace(/_/ig, ' ').toLowerCase()
+  }
+}
+
+const removeMessage = () => {
+  return {
+    type: actionTypes.REMOVE_MESSAGE
+  }
+}
+
+const setMessage = (type, message) => {
+  return dispatch => {
+    dispatch(setMessageToState(type, message));
+    setTimeout(() => {
+      dispatch(removeMessage());
+    }, 2000);
+  }
+}
+
 const authSuccess = (data) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
@@ -23,9 +46,12 @@ const getMyTranslations = (user) => {
     axios.get(url)
       .then(resp => {
         dispatch(saveMyTranslations(resp.data));
+        localStorage.setItem('translations', JSON.stringify(resp.data));
       })
       .catch(err => {
         console.log(err);
+        dispatch(setMessage('error', err.response.data.error.message || err.response.data.error));
+        dispatch(saveMyTranslations(JSON.parse(localStorage.getItem('translations'))));
       });
   }
 };
@@ -55,6 +81,7 @@ const reauth = token => {
       })
       .catch(err => {
         console.log(err);
+        dispatch(setMessage('error', err.response.data.error.message || err.response.data.error));
       })
   }
 }
@@ -135,9 +162,11 @@ export const saveUser = (data) => {
         idToken: resp.data.idToken,
         userId: resp.data.localId
       }));
+      dispatch(setMessage('success', 'Success!'));
     })
     .catch(err => {
       console.log(err);
+      dispatch(setMessage('error', err.response.data.error.message || err.response.data.error));
     });
   }
 };
@@ -146,6 +175,7 @@ export const logout = () => {
   return dispatch => {
     localStorage.clear();
     dispatch(logoutSuccess());
+    dispatch(setMessage('success', 'Signed out!'));
   }
 };
 
@@ -160,11 +190,13 @@ export const saveTranslation = (data, callback) => {
 
       axios.post(url, newData)
         .then(resp => {
-          dispatch(saveTranslationToLocal(newData, resp.data.name))
+          dispatch(saveTranslationToLocal(newData, resp.data.name));
+          dispatch(setMessage('success', 'Saved!'));
           callback(true);
         })
         .catch(err => {
           console.log(err);
+          dispatch(setMessage('error', err.response.data.error.message || err.response.data.error));
           callback(false);
         });
     }
@@ -176,9 +208,11 @@ export const deleteTranslate = (name, token) => {
     axios.delete('https://remember-the-word-8fd71.firebaseio.com/translations/' + name + '.json?auth=' + token)
       .then(resp => {
         dispatch(deleteTranslateFromLocal(name));
+        dispatch(setMessage('success', 'Deleted!'));
       })
       .catch(err => {
         console.log(err);
+        dispatch(setMessage('error', err.response.data.error.message || err.response.data.error));
       });
   }
 };

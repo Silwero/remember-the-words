@@ -90,7 +90,7 @@ export class Auth extends Component {
           <FormGroup>
             <Button block color="primary">Submit</Button>
           </FormGroup>
-          <span className="switch-auth" onClick={this.switchAuth}>Switch to {this.state.text.switchText}</span>
+          <span className="switch-auth hover-line" onClick={this.switchAuth}>Switch to {this.state.text.switchText}</span>
         </Form>
       </div>
     }

@@ -4,8 +4,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Translation from '../../components/Translation/Translation';
 import * as actions from '../../store/actions/actions';
+import { Input, FormGroup, Label } from 'reactstrap';
 
 export class MyTranslations extends Component {
+  state = {
+    sortBy: ''
+  }
 
   toggleVariats = (target) => {
     target.parentElement.classList.toggle('variants-visible');
@@ -15,11 +19,22 @@ export class MyTranslations extends Component {
     this.props.deleteTranslate(deleteName, this.props.idToken);
   }
 
+  findTranslation = e => {
+    this.setState({
+      sortBy: e.target.value
+    });
+  }
+
   render() {
     let myTranslations = <p className="empty">No saved translations!</p>
 
-    if (Object.keys(this.props.translations).length) {
-      myTranslations = Object.keys(this.props.translations).map((el, i) => {
+    let translationResult = Object.keys(this.props.translations).filter((el) => {
+      const rExp = new RegExp(this.state.sortBy, 'gi');
+      return rExp.test(this.props.translations[el].translation.source) || rExp.test(this.props.translations[el].translation.translation);
+    });
+
+    if (translationResult.length) {
+      myTranslations = translationResult.map((el, i) => {
         return <Translation target={el} delete={this.deleteTranslate} click={this.toggleVariats} key={i} translation={this.props.translations[el].translation} />
       });
     }
@@ -27,6 +42,12 @@ export class MyTranslations extends Component {
     return (
       <div className="my-translations">
         <h1>My Translations</h1>
+        <div className="translation-sort">
+          <FormGroup>
+            <Label>Find</Label>
+            <Input type="text" value={this.state.sortBy} onChange={this.findTranslation} />
+          </FormGroup>
+        </div>
         <div className="tanslations-list">
           <div className="translations-list-tanslation">
             <div className="translation-source translation-th">

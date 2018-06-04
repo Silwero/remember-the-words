@@ -48,6 +48,7 @@
 	transform-origin: 0 0;
 	transition: all .3s;
 	backface-visibility: hidden;
+	z-index: 2;
 }
 
 .header-nav .has-sub:hover .subnav {
@@ -70,4 +71,68 @@
 
 .header-nav-logo img {
 	max-width: 100%;
+}
+
+@media (max-width: 767px) {
+	.header-nav {
+		position: absolute;
+		left: 0;
+		top: 100%;
+		right: 0;
+		flex-direction: column;
+		background: #facc43;
+		box-shadow: 0 2px 3px rgba(55,67,83,.3);
+		transform: scaleY(0);
+		transform-origin: 0 0;
+		transition: all .3s;
+		align-items: stretch;
+		text-align: center;
+		padding: 20px 0;
+	}
+
+	.header-nav-link {
+		padding: 5px 15px;
+	}
+
+	.header-nav .subnav a {
+		font-size: 14px;
+	}
+
+	.header-nav .subnav {
+		position: static;
+		transform: none;
+		visibility: visible
+	}
+
+	.mobile-menu-opened .header-nav {
+		transform: scaleY(1);
+	}
+
+	.header {
+		padding: 15px 0;
+		position: relative;
+		z-index: 1;
+		box-shadow: inset 0 0 0 1px rgba(55,67,83,.3);
+	}
+
+	.header-nav .has-sub:hover > div {
+		background: transparent;
+	}
+
+	.header-nav .has-sub > .header-nav-link {
+		position: relative;
+		padding-left: 40px;
+		padding-right: 40px;
+		align-items: center;
+		display: flex;
+		justify-content: center;
+	}
+
+	.header-nav .has-sub > .header-nav-link::after {
+		content: '';
+		border-left: 6px solid transparent;
+	  border-right: 6px solid transparent;
+	  border-top: 6px solid #374353;
+	  margin-left: 10px;
+	}
 }
