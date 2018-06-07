@@ -15,6 +15,18 @@ const setMessageToState = (type, message) => {
   }
 }
 
+const startLoading = () => {
+  return {
+    type: actionTypes.START_LOADING
+  }
+}
+
+const stopLoading = () => {
+  return {
+    type: actionTypes.STOP_LOADING
+  }
+}
+
 const removeMessage = () => {
   return {
     type: actionTypes.REMOVE_MESSAGE
@@ -39,6 +51,8 @@ const authSuccess = (data) => {
 
 const getMyTranslations = (user) => {
   return dispatch => {
+    dispatch(startLoading());
+
     const url = 'https://remember-the-word-8fd71.firebaseio.com/translations.json?auth='
       + user.idToken
       + '&orderBy="userId"&equalTo="' + user.userId + '"';
@@ -50,25 +64,30 @@ const getMyTranslations = (user) => {
       })
       .catch(err => {
         console.log(err);
-        dispatch(setMessage('error', err.response.data.error.message || err.response.data.error));
+        dispatch(setMessage('error', 'Can not get new translations from server!'));
         dispatch(saveMyTranslations(JSON.parse(localStorage.getItem('translations'))));
-      });
+      })
+      .then(() => {
+        dispatch(stopLoading());
+      });;
   }
 };
 
-const reauth = token => {
+const reauth = (token, callback) => {
   return dispatch => {
     const data = {
       refresh_token: token,
       grant_type: "refresh_token"
     }
 
+    const userInfo = {}
+
     axios.post('https://securetoken.googleapis.com/v1/token?key=AIzaSyD3t0fb3r3wPpByekL27K5lgUAnL2NBw6I', data)
       .then(resp => {
-        const userInfo = {}
         userInfo.idToken = resp.data.id_token;
         userInfo.refreshToken = resp.data.refresh_token;
         userInfo.localId = resp.data.user_id;
+        userInfo.displayName = localStorage.getItem('userName');
 
         const expirationDate = new Date(new Date().getTime() + resp.data.expires_in * 1000);
         localStorage.setItem('token', resp.data.id_token);
@@ -78,11 +97,20 @@ const reauth = token => {
 
         dispatch(authSuccess(userInfo));
         dispatch(checkAuthTimeout(resp.data.expires_in));
+        callback();
       })
       .catch(err => {
         console.log(err);
-        dispatch(setMessage('error', err.response.data.error.message || err.response.data.error));
-      })
+
+        userInfo.idToken = localStorage.getItem('token');
+        userInfo.refreshToken = localStorage.getItem('refreshToken');
+        userInfo.localId = localStorage.getItem('user_id');
+        userInfo.displayName = localStorage.getItem('userName');
+        dispatch(authSuccess(userInfo));
+        callback();
+        const message = err.response ? err.response.data.error.message || err.response.data.error : 'Check your internet connection!';
+        dispatch(setMessage('error', message));
+      });
   }
 }
 
@@ -128,21 +156,28 @@ export const checkAuth = () => {
     userInfo.displayName = localStorage.getItem('userName');
 
     if (new Date() > new Date(userInfo.expirationDate)) {
-      dispatch(reauth(userInfo.refreshToken));
+      dispatch(reauth(userInfo.refreshToken, () => {
+        dispatch(getMyTranslations({
+          idToken: userInfo.idToken,
+          userId: userInfo.localId
+        }));
+      }));
     } else {
       dispatch(authSuccess(userInfo));
       const expTime = (new Date(userInfo.expirationDate).getTime() - new Date().getTime()) / 1000;
       dispatch(checkAuthTimeout(expTime));
+      dispatch(getMyTranslations({
+        idToken: userInfo.idToken,
+        userId: userInfo.localId
+      }));
     }
-    dispatch(getMyTranslations({
-      idToken: userInfo.idToken,
-      userId: userInfo.localId
-    }));
   }
 }
 
 export const saveUser = (data) => {
   return dispatch => {
+    dispatch(startLoading());
+
     let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyD3t0fb3r3wPpByekL27K5lgUAnL2NBw6I';
     if (data.displayName) {
       url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyD3t0fb3r3wPpByekL27K5lgUAnL2NBw6I';
@@ -166,8 +201,12 @@ export const saveUser = (data) => {
     })
     .catch(err => {
       console.log(err);
-      dispatch(setMessage('error', err.response.data.error.message || err.response.data.error));
-    });
+      const message = err.response ? err.response.data.error.message || err.response.data.error : 'Check your internet connection!';
+      dispatch(setMessage('error', message));
+    })
+    .then(() => {
+      dispatch(stopLoading());
+    });;
   }
 };
 
@@ -181,6 +220,8 @@ export const logout = () => {
 
 export const saveTranslation = (data, callback) => {
     return dispatch => {
+      dispatch(startLoading());
+
       const newData = {
         userId: data.user.userId,
         translation: data.translation
@@ -196,14 +237,19 @@ export const saveTranslation = (data, callback) => {
         })
         .catch(err => {
           console.log(err);
-          dispatch(setMessage('error', err.response.data.error.message || err.response.data.error));
+          const message = err.response ? err.response.data.error.message || err.response.data.error : 'Check your internet connection!';
+          dispatch(setMessage('error', message));
           callback(false);
-        });
+        })
+        .then(() => {
+          dispatch(stopLoading());
+        });;
     }
 };
 
 export const deleteTranslate = (name, token) => {
   return dispatch => {
+    dispatch(startLoading());
 
     axios.delete('https://remember-the-word-8fd71.firebaseio.com/translations/' + name + '.json?auth=' + token)
       .then(resp => {
@@ -212,7 +258,11 @@ export const deleteTranslate = (name, token) => {
       })
       .catch(err => {
         console.log(err);
-        dispatch(setMessage('error', err.response.data.error.message || err.response.data.error));
+        const message = err.response ? err.response.data.error.message || err.response.data.error : 'Check your internet connection!';
+        dispatch(setMessage('error', message));
+      })
+      .then(() => {
+          dispatch(stopLoading());
       });
   }
 };

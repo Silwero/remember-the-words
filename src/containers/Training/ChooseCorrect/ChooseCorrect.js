@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { CustomInput, Row, Col, FormGroup, Button } from 'reactstrap';
 import {randomInteger} from '../../../supportFunctions/supportFunctions';
+import AdditionalVariants from '../../../components/AdditionalVariants/AdditionalVariants';
 
 import TestCounters from '../../../components/TestCounters/TestCounters';
 
@@ -12,6 +13,7 @@ export class ChooseCorrect extends Component {
     currentSource: 'word',
     currentTranslation: 'слово',
     currentVariants: ['конфета', 'баклажан', 'терять'],
+    variants: '',
     answer: '',
     numberOfAnswersVariants: 3,
     errors: 0,
@@ -61,7 +63,8 @@ export class ChooseCorrect extends Component {
       currentSource: translations[currentSource].translation.source,
       currentTranslation: translations[currentSource].translation.translation,
       currentVariants: currentVariants,
-      prevAnswer: currentSource
+      prevAnswer: currentSource,
+      variants: translations[currentSource].translation.variants
     });
   }
 
@@ -128,6 +131,7 @@ export class ChooseCorrect extends Component {
           ? <div className="choose-correct-answer training-wrapper">
               <div className="training-source">
                 {this.state.currentSource}
+                <AdditionalVariants variants={this.state.variants} />
               </div>
               <Row>
                 {answers}

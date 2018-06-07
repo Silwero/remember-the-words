@@ -115,3 +115,15 @@
 .toggle-variants:hover {
   border-top-color: #263242;
 }
+
+@media (max-width: 767px) {
+  .translation-result {
+    padding-right: 35px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .translations-list-tanslation:hover {
+    margin-right: 15px;
+  }
+}

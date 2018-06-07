@@ -3,7 +3,6 @@ import './Auth.css';
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 
 import * as actions from '../../store/actions/actions';
 
@@ -20,7 +19,7 @@ export class Auth extends Component {
 
   changeValue = (e) => {
     this.setState({
-      [e.target.id]: e.target.value
+      [e.target.name]: e.target.value
     });
   }
 
@@ -68,11 +67,11 @@ export class Auth extends Component {
     if (this.state.text.headerText === 'Registeration') {
       userName = <FormGroup>
             <Label for="userName">Name</Label>
-            <Input type="text" autoComplete="off" onInput={this.changeValue} value={this.state.userName} name="userName" id="userName" placeholder="Enter email" />
+            <Input type="text" autoComplete="off" onInput={this.changeValue} value={this.state.userName} name="userName"  placeholder="Enter your Name" />
           </FormGroup>;
     }
 
-    let auth = <Redirect to="/" />;
+    let auth = null;
 
     if (!this.props.isAuth) {
       auth = <div className="auth">
@@ -81,11 +80,11 @@ export class Auth extends Component {
           {userName}
           <FormGroup>
             <Label for="email">Email</Label>
-            <Input type="email" autoComplete="off" onInput={this.changeValue} value={this.state.email} name="email" id="email" placeholder="Enter email" />
+            <Input type="email" autoComplete="off" onInput={this.changeValue} value={this.state.email} name="email" placeholder="Enter email" />
           </FormGroup>
           <FormGroup>
             <Label for="password">Password</Label>
-            <Input type="password" onInput={this.changeValue} value={this.state.password} name="password" id="password" placeholder="Enter password" />
+            <Input type="password" autoComplete="off" onInput={this.changeValue} value={this.state.password} name="password" placeholder="Enter password" />
           </FormGroup>
           <FormGroup>
             <Button block color="primary">Submit</Button>

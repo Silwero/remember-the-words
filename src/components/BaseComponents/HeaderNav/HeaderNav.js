@@ -21,7 +21,7 @@ export class HeaderNav extends Component {
 			},
 			training: {
 				url: '/training',
-				placeholder: 'Еraining',
+				placeholder: 'Training',
 				authOnly: true,
 				unAuthOnly: false,
 				subnav: {

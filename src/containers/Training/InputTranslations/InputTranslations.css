@@ -9,19 +9,43 @@
 .answer-result div {
   display: flex;
   justify-content: center;
-  opacity: .7;
+  opacity: .5;
   align-items: center;
   border: 2px solid currentColor;
   margin: 0 5px 15px;
   width: 50px;
   height: 50px;
+  position: relative;
+}
+
+.answer-result div::after {
+  position: absolute;
+  content: attr(data-tipp);
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.answer-result .mistake.with-tipp::after {
+  transform: translateY(100%);
+  font-size: 10px;
+  height: auto;
+  opacity: 1;
+}
+
+.answer-result .mistake.with-tipp {
+  cursor: pointer;
 }
 
 .answer-result .space {
   border-top: 0;
   border-right: 0;
   border-left: 0;
-  opacity: .3;
+  opacity: .1;
 }
 
 .answer-result .correct,
@@ -56,6 +80,7 @@
     width: 25px;
     height: 25px;
     margin: 0 3px 6px;
+    padding: 2px 0 0;
   }
 
   .training-source {
@@ -65,5 +90,45 @@
 
   .additional-variants:not(:empty) {
     margin-top: 10px;
+  }
+}
+
+@media (max-height: 500px) {
+  .training h1 {
+    display: none;
+  }
+
+  .training-source {
+    margin-bottom: 10px;
+  }
+
+  .training-input-translation label {
+    display: none;
+  }
+
+  .training .header {
+    padding: 15px 0 0;
+    box-shadow: none;
+    height: 39px;
+  }
+
+  .helps .help-btn {
+    margin-bottom: 5px;
+  }
+
+  .training .test-counters {
+    margin-top: 0;
+  }
+
+  .training-wrapper {
+    margin: -20px -15px 0;
+    min-height: calc(100vh - 39px);
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+  }
+
+  .training .animation-wrapper > div {
+    padding-bottom: 0;
   }
 }

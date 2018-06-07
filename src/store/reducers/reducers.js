@@ -6,12 +6,19 @@ const initialState = {
     displayName: ''
   },
   translations: {},
-  message: {}
+  message: {},
+  isLoading: false
 }
 
 export const reducer = (state = initialState, action) => {
   const newState = {...state};
 	switch(action.type) {
+    case ActionTypes.START_LOADING:
+      newState.isLoading = true;
+      return newState;
+    case ActionTypes.STOP_LOADING:
+      newState.isLoading = false;
+      return newState;
     case ActionTypes.SET_MESSAGE:
       let message = {
         type: action.is,
@@ -26,9 +33,13 @@ export const reducer = (state = initialState, action) => {
       let translations = {...newState.translations}
       delete translations[action.name];
       newState.translations = {...translations};
+      localStorage.setItem('translations', JSON.stringify(translations));
       return newState;
     case ActionTypes.SAVE_TRANSLATION_TO_LOCAL:
-      newState.translations[action.name] = {...action.data};
+      const newTranslations = {...newState.translations}
+      newTranslations[action.name] = {...action.data}
+      newState.translations = newTranslations;
+      localStorage.setItem('translations', JSON.stringify(newTranslations));
       return newState
     case ActionTypes.SAVE_TRANSLATIONS:
       newState.translations = {...action.data};
@@ -41,13 +52,15 @@ export const reducer = (state = initialState, action) => {
       newState.isAuth = false;
       return newState;
 		case ActionTypes.AUTH_SUCCESS:
+      const newUserInfo = {}
       if (action.data.displayName) {
-        newState.userInfo.displayName = action.data.displayName;
+        newUserInfo.displayName = action.data.displayName;
       }
-      newState.userInfo.userId = action.data.localId;
-      newState.userInfo.idToken = action.data.idToken;
-      newState.userInfo.refreshToken = action.data.refreshToken;
+      newUserInfo.userId = action.data.localId;
+      newUserInfo.idToken = action.data.idToken;
+      newUserInfo.refreshToken = action.data.refreshToken;
       newState.isAuth = true;
+      newState.userInfo = newUserInfo;
 			return newState;
 		default:
 			return state

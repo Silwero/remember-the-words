@@ -1,4 +1,5 @@
 import './InputTranslations.css';
+import '../../../assets/css/keyboard.css';
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -24,12 +25,12 @@ export class InputTranslations extends Component {
     letterShowed: 0
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.createTest();
   }
 
   componentWillReceiveProps(nextProps) {
-    this.createTest(nextProps.translations);
+    if (!this.state.currentSource) this.createTest(nextProps.translations);
   }
 
   createTest = (translations = this.props.translations) => {
@@ -57,13 +58,20 @@ export class InputTranslations extends Component {
       prevAnswer: currentSource,
       variants: translations[currentSource].translation.variants
     }, () => {
-      this._input.focus();
+
     });
   }
 
   showLetter = () => {
-    if (this.state.showedLetters.join('') === this.state.currentTranslation) {
-      this._input.focus();
+    let test = this.state.answer.split('');
+    for (let i = 0; i < this.state.currentTranslation.length; i++) {
+      if (this.state.showedLetters[i]) {
+        test[i] = this.state.showedLetters[i];
+      }
+    }
+
+    if (this.state.showedLetters.join('') === this.state.currentTranslation || test.join('') === this.state.currentTranslation) {
+      this.showAnswer();
       return;
     }
 
@@ -72,7 +80,7 @@ export class InputTranslations extends Component {
 
     const newShowedLetters = [...this.state.showedLetters];
 
-    if (!newShowedLetters[letterNum]) {
+    if (!newShowedLetters[letterNum] && this.state.answer[letterNum] !== this.state.currentTranslation[letterNum]) {
       newShowedLetters[letterNum] = letter;
     } else {
       this.showLetter();
@@ -82,7 +90,7 @@ export class InputTranslations extends Component {
       showedLetters: newShowedLetters,
       letterShowed: state.letterShowed + 1
     }), () => {
-      this._input.focus();
+
       if (this.state.showedLetters.join('') === this.state.currentTranslation) this.showAnswer();
     });
   }
@@ -117,7 +125,7 @@ export class InputTranslations extends Component {
         }));
         target.disabled = false;
         target.parentNode.parentNode.classList.remove('testing');
-        this._input.focus();
+
       }, this.state.timer);
     }
   }
@@ -129,6 +137,24 @@ export class InputTranslations extends Component {
     }), this._input.focus());
   }
 
+  setCorrect = (e, num) => {
+    const target = e.target;
+    if (!target.classList.contains('with-tipp') || !target.classList.contains('mistake')) return;
+
+    let newAnswer = [...this.state.answer.split('')];
+
+    if (this.state.answer[num] !== this.state.currentTranslation[num]) {
+      newAnswer.splice(num, 1,  this.state.currentTranslation[num]);
+      this.setState({
+        answer: newAnswer.join('')
+      });
+    }
+  }
+
+  keyboardEvent = (e) => {
+    console.log(e);
+  }
+
   render() {
     let answerResult = this.state.currentTranslation.split('').map((letter, i) => {
       let clName = 'letter'
@@ -138,8 +164,8 @@ export class InputTranslations extends Component {
       } else if (this.state.answer[i] && letter !== this.state.answer[i]) {
         clName += ' mistake'
       }
-      return <div className={clName} key={i}>
-        {this.state.answer[i] ? this.state.answer[i] : this.state.showedLetters[i] || null}
+      return <div onClick={(e) => this.setCorrect(e, i)} className={clName + (this.state.showedLetters[i] ? ' with-tipp' : '')} key={i} data-tipp={this.state.showedLetters[i] ? this.state.showedLetters[i] : ''}>
+        {this.state.answer[i] || null}
       </div>;
     });
 
@@ -169,8 +195,9 @@ export class InputTranslations extends Component {
                 value={this.state.answer}
                 autoComplete="off"
                 onChange={this.changeAnswerHandler}
-                autoFocus="true"
-                innerRef={(input) => (this._input = input)} />
+                onBlur={() => {this._input.focus()}}
+                // autoFocus="true"
+                innerRef={(input) => (this._input = input)}/>
             </FormGroup>
             <FormGroup>
               <div className="answer-result">

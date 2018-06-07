@@ -2,14 +2,30 @@ html {
   font-size: 16px;
 }
 
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   color: #374353;
   font-family: Arial, sans-serif;
+  overflow-y: scroll;
 }
+
 
 h1 {
   margin-bottom: 1em;
   text-align: center;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 input[type="text"]:focus,
@@ -32,10 +48,15 @@ textarea.form-control:focus {
   opacity: 0;
 }
 
+div.form-control {
+  height: 38px;
+}
+
 input[type="text"],
 input[type="password"],
 input[type="email"],
-textarea.form-control {
+textarea.form-control,
+div.form-control {
   border: 1px solid #374353;
   background: #facc43;
   box-shadow: inset 0 0 15px 2px rgba(55,67,83,.3);
@@ -55,4 +76,15 @@ label {
 .empty {
   text-align: center;
   margin: 20px 0;
+}
+
+@media (max-width: 767px) {
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+
+  .content {
+    padding: 15px 0;
+  }
 }

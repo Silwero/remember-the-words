@@ -2,14 +2,15 @@
   background: #28a745;
   padding: 6px 0;
   color: #fff;
-  position: absolute;
-  top: 0;
+  position: fixed;
+  bottom: 0;
+  z-index: 2;
   left: 0;
   right: 0;
   text-align: center;
   transform: scaleY(0);
   transition: transform .3s;
-  transform-origin: 0 0;
+  transform-origin: 0 100%;
 }
 
 .error {

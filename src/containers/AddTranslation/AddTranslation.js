@@ -82,7 +82,8 @@ export class AddTranslation extends Component {
                   id="source"
                   onChange={this.inputHandler}
                   value={this.state.source}
-                  placeholder="Enter text to translate" />
+                  placeholder="Enter text to translate"
+                  autoComplete="off" />
               </FormGroup>
             </Col>
             <Col sm={6}>
@@ -92,7 +93,8 @@ export class AddTranslation extends Component {
                   id="translation"
                   onChange={this.inputHandler}
                   value={this.state.translation}
-                  placeholder="Enter translation" />
+                  placeholder="Enter translation"
+                  autoComplete="off" />
               </FormGroup>
             </Col>
             <Col sm={12}>
@@ -102,7 +104,8 @@ export class AddTranslation extends Component {
                   id="variants"
                   onChange={this.inputHandler}
                   value={this.state.variants}
-                  placeholder="Other variants separated by commas" />
+                  placeholder="Other variants separated by commas"
+                  autoComplete="off" />
               </FormGroup>
             </Col>
             <Col sm={6}>

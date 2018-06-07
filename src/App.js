@@ -1,24 +1,20 @@
 import './App.css';
 
 import Logo from './assets/images/logo.svg';
+import { routes } from './Routing/Routing';
 
 import React, { Component } from 'react';
 import HeaderNav from './components/BaseComponents/HeaderNav/HeaderNav';
-import { Link, Switch, Route, withRouter } from 'react-router-dom';
+import { Link, Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from './store/actions/actions';
-import { AnimatedSwitch } from 'react-router-transition';
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 
-import Auth from './containers/Auth/Auth';
-import Logout from './containers/Auth/Logout';
-import AddTranslation from './containers/AddTranslation/AddTranslation';
-import MyTranslations from './containers/MyTranslations/MyTranslations';
-import Home from './containers/Home/Home';
-import ChooseCorrect from './containers/Training/ChooseCorrect/ChooseCorrect';
-import InputTranslations from './containers/Training/InputTranslations/InputTranslations';
 import HamburgerBtn from './components/BaseComponents/HeaderNav/HamburgerBtn/HamburgerBtn';
 import Overlay from './components/BaseComponents/Overlay/Overlay';
 import Message from './components/BaseComponents/Message/Message';
+import Loader from './components/Loader/Loader';
+// import Canvas from './components/Canvas/Canvas';
 
 class App extends Component {
 
@@ -37,8 +33,23 @@ class App extends Component {
   }
 
   render() {
+    const routing = routes.map(el => {
+      if(this.props.isAuth) {
+        return (el.authOnly || !el.unAuthOnly) ? <Route key={el.path} exact={el.exact} path={el.path} component={el.component}/> : null;
+      } else {
+        return (!el.authOnly || !el.unAuthOnly) ? <Route key={el.path} exact={el.exact} path={el.path} component={el.component}/> : null
+      }
+    });
+
+    routing.push(<Redirect key="redirect" to="/" />);
+
+    let pageClass = '';
+    if (this.props.location.pathname === '/choose-correct' || this.props.location.pathname === '/input-translation') {
+      pageClass = ' training'
+    }
+
     return (
-      <div className="App">
+      <div className={"App" + pageClass}>
         <header className="header">
           <div className="container">
             <div className="d-flex justify-content-between align-items-center">
@@ -56,25 +67,17 @@ class App extends Component {
         <main className="content">
            {Object.keys(this.props.message).length ? <Message type={this.props.message.type} message={this.props.message.text} /> : null }
           <div className="container">
-            <AnimatedSwitch
-              atEnter={{ opacity: 0 }}
-              atLeave={{ opacity: 0 }}
-              atActive={{ opacity: 1 }}
-              className="switch-wrapper"
-            >
-                <Route exact path='/' component={Home}/>
-                <Route path='/auth' component={Auth}/>
-                <Route path='/add-translation' component={AddTranslation}/>
-                <Route path='/logout' component={Logout}/>
-                <Route path='/my-translations' component={MyTranslations}/>
-                <Route path='/choose-correct' component={ChooseCorrect}/>
-                <Route path='/input-translation' component={InputTranslations}/>
-            </AnimatedSwitch>
+            <TransitionGroup className="animation-wrapper">
+              <CSSTransition key={this.props.location.pathname} classNames="animate" timeout={500}>
+                <Switch location={this.props.location}>
+                  {routing}
+                </Switch>
+              </CSSTransition>
+            </TransitionGroup>
           </div>
         </main>
-        <footer className="footer">
-
-        </footer>
+        {/*<Canvas />*/}
+        {this.props.isLoading ? <Loader /> : null}
         <Overlay click={this.closeMenuOnOverlayClick} />
       </div>
     );
@@ -83,7 +86,9 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    message: state.message
+    message: state.message,
+    isLoading: state.isLoading,
+    isAuth: state.isAuth
   }
 }
 
