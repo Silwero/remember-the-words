@@ -53,6 +53,8 @@ const getMyTranslations = (user) => {
   return dispatch => {
     dispatch(startLoading());
 
+    console.log('response get translations');
+
     const url = 'https://remember-the-word-8fd71.firebaseio.com/translations.json?auth='
       + user.idToken
       + '&orderBy="userId"&equalTo="' + user.userId + '"';
@@ -61,6 +63,7 @@ const getMyTranslations = (user) => {
       .then(resp => {
         dispatch(saveMyTranslations(resp.data));
         localStorage.setItem('translations', JSON.stringify(resp.data));
+        console.log(resp.data);
       })
       .catch(err => {
         console.log(err);
@@ -68,6 +71,7 @@ const getMyTranslations = (user) => {
         dispatch(saveMyTranslations(JSON.parse(localStorage.getItem('translations'))));
       })
       .then(() => {
+        console.log('translations goted! Or not?');
         dispatch(stopLoading());
       });;
   }
@@ -97,7 +101,7 @@ const reauth = (token, callback) => {
 
         dispatch(authSuccess(userInfo));
         dispatch(checkAuthTimeout(resp.data.expires_in));
-        callback();
+        if (callback) callback(resp.data.id_token);
       })
       .catch(err => {
         console.log(err);
@@ -107,7 +111,7 @@ const reauth = (token, callback) => {
         userInfo.localId = localStorage.getItem('user_id');
         userInfo.displayName = localStorage.getItem('userName');
         dispatch(authSuccess(userInfo));
-        callback();
+        if (callback) callback();
         const message = err.response ? err.response.data.error.message || err.response.data.error : 'Check your internet connection!';
         dispatch(setMessage('error', message));
       });
@@ -156,9 +160,9 @@ export const checkAuth = () => {
     userInfo.displayName = localStorage.getItem('userName');
 
     if (new Date() > new Date(userInfo.expirationDate)) {
-      dispatch(reauth(userInfo.refreshToken, () => {
+      dispatch(reauth(userInfo.refreshToken, (token) => {
         dispatch(getMyTranslations({
-          idToken: userInfo.idToken,
+          idToken: token,
           userId: userInfo.localId
         }));
       }));

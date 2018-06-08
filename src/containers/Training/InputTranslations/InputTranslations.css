@@ -93,7 +93,7 @@
   }
 }
 
-@media (max-height: 500px) {
+@media (max-width: 767px) and (max-height: 500px) {
   .training h1 {
     display: none;
   }
