@@ -53,17 +53,14 @@ const getMyTranslations = (user) => {
   return dispatch => {
     dispatch(startLoading());
 
-    console.log('response get translations');
-
     const url = 'https://remember-the-word-8fd71.firebaseio.com/translations.json?auth='
       + user.idToken
       + '&orderBy="userId"&equalTo="' + user.userId + '"';
 
-    axios.get(url)
+    axios.get(url, {timeout: 10000})
       .then(resp => {
         dispatch(saveMyTranslations(resp.data));
         localStorage.setItem('translations', JSON.stringify(resp.data));
-        console.log(resp.data);
       })
       .catch(err => {
         console.log(err);
@@ -71,7 +68,6 @@ const getMyTranslations = (user) => {
         dispatch(saveMyTranslations(JSON.parse(localStorage.getItem('translations'))));
       })
       .then(() => {
-        console.log('translations goted! Or not?');
         dispatch(stopLoading());
       });;
   }
@@ -86,7 +82,7 @@ const reauth = (token, callback) => {
 
     const userInfo = {}
 
-    axios.post('https://securetoken.googleapis.com/v1/token?key=AIzaSyD3t0fb3r3wPpByekL27K5lgUAnL2NBw6I', data)
+    axios.post('https://securetoken.googleapis.com/v1/token?key=AIzaSyD3t0fb3r3wPpByekL27K5lgUAnL2NBw6I', data, {timeout: 10000})
       .then(resp => {
         userInfo.idToken = resp.data.id_token;
         userInfo.refreshToken = resp.data.refresh_token;
@@ -233,7 +229,7 @@ export const saveTranslation = (data, callback) => {
 
       const url = 'https://remember-the-word-8fd71.firebaseio.com/translations.json?auth=' + data.user.idToken;
 
-      axios.post(url, newData)
+      axios.post(url, newData, {timeout: 10000})
         .then(resp => {
           dispatch(saveTranslationToLocal(newData, resp.data.name));
           dispatch(setMessage('success', 'Saved!'));
@@ -255,7 +251,7 @@ export const deleteTranslate = (name, token) => {
   return dispatch => {
     dispatch(startLoading());
 
-    axios.delete('https://remember-the-word-8fd71.firebaseio.com/translations/' + name + '.json?auth=' + token)
+    axios.delete('https://remember-the-word-8fd71.firebaseio.com/translations/' + name + '.json?auth=' + token, {timeout: 10000})
       .then(resp => {
         dispatch(deleteTranslateFromLocal(name));
         dispatch(setMessage('success', 'Deleted!'));

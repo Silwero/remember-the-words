@@ -37,11 +37,12 @@ class App extends Component {
       if(this.props.isAuth) {
         return (el.authOnly || !el.unAuthOnly) ? <Route key={el.path} exact={el.exact} path={el.path} component={el.component}/> : null;
       } else {
-        return (!el.authOnly || !el.unAuthOnly) ? <Route key={el.path} exact={el.exact} path={el.path} component={el.component}/> : null
+        return (!el.authOnly) ? <Route key={el.path} exact={el.exact} path={el.path} component={el.component}/> : null
       }
     });
 
     routing.push(<Redirect key="redirect" to="/" />);
+    console.log(routing);
 
     let pageClass = '';
     if (this.props.location.pathname === '/choose-correct' || this.props.location.pathname === '/input-translation') {
